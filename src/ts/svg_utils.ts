@@ -79,7 +79,7 @@ export function on<K extends keyof GlobalEventHandlersEventMap>(type: K, element
 
 export function on<K extends keyof GlobalEventHandlersEventMap>(event: GlobalEventHandlersEventMap[K], element: any, callback: (this: EventSource, ev: GlobalEventHandlersEventMap[K]) => any, selector?: string) {
     if (!selector) {
-        $.bind(element, event, callback);
+        element.addEventListener(event,callback);
     } else {
         $.delegate(element, event, selector, callback);
     }
@@ -88,20 +88,10 @@ export function on<K extends keyof GlobalEventHandlersEventMap>(event: GlobalEve
 $.on = (element, event, selector, callback) => {
     if (!callback) {
         callback = selector;
-        $.bind(element, event, callback);
+        element.addEventListener(event,callback);
     } else {
         $.delegate(element, event, selector, callback);
     }
-};
-
-$.off = (element, event, handler) => {
-    element.removeEventListener(event, handler);
-};
-
-$.bind = (element, event, callback) => {
-    event.split(/\s+/).forEach(function (event) {
-        element.addEventListener(event, callback);
-    });
 };
 
 $.delegate = (element, event, selector, callback) => {

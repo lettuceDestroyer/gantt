@@ -317,19 +317,11 @@ var Gantt = (function () {
     $.on = function (element, event, selector, callback) {
         if (!callback) {
             callback = selector;
-            $.bind(element, event, callback);
+            element.addEventListener(event, callback);
         }
         else {
             $.delegate(element, event, selector, callback);
         }
-    };
-    $.off = function (element, event, handler) {
-        element.removeEventListener(event, handler);
-    };
-    $.bind = function (element, event, callback) {
-        event.split(/\s+/).forEach(function (event) {
-            element.addEventListener(event, callback);
-        });
     };
     $.delegate = function (element, event, selector, callback) {
         element.addEventListener(event, function (e) {
@@ -339,14 +331,6 @@ var Gantt = (function () {
                 callback.call(this, e, delegatedTarget);
             }
         });
-    };
-    $.closest = function (selector, element) {
-        if (!element)
-            return null;
-        if (element.matches(selector)) {
-            return element;
-        }
-        return $.closest(selector, element.parentNode);
     };
     $.attr = function (element, attr, value) {
         if (!value && typeof attr === 'string') {
@@ -1520,7 +1504,7 @@ var Gantt = (function () {
                 is_resizing = true;
                 x_on_start = e.offsetX;
                 y_on_start = e.offsetY;
-                var $bar_wrapper = $.closest('.bar-wrapper', handle);
+                var $bar_wrapper = handle.closest('.bar-wrapper');
                 var id = $bar_wrapper.getAttribute('data-id');
                 bar = _this.get_bar(id);
                 $bar_progress = bar.bar_progress;
