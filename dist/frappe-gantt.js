@@ -1434,12 +1434,12 @@ var Gantt = (function () {
                     $bar.finaldx = 0;
                 });
             });
-            $.on(this.svg, 'mousemove', function (e) {
+            this.svg.addEventListener("mousemove", function (mouseEvent) {
                 console.log("mousemove");
                 if (!action_in_progress())
                     return;
-                var dx = e.offsetX - x_on_start;
-                e.offsetY - y_on_start;
+                var dx = mouseEvent.offsetX - x_on_start;
+                mouseEvent.offsetY - y_on_start;
                 bars.forEach(function (bar) {
                     var $bar = bar;
                     $bar.finaldx = _this.get_snap_position(dx);
@@ -1472,6 +1472,41 @@ var Gantt = (function () {
                     }
                 });
             });
+            /*        $.on(this.svg, 'mousemove', (e) => {
+                        console.log("mousemove");
+                        if (!action_in_progress()) return;
+                        const dx = e.offsetX - x_on_start;
+                        const dy = e.offsetY - y_on_start;
+
+                        bars.forEach((bar) => {
+                            const $bar = bar;
+                            $bar.finaldx = this.get_snap_position(dx);
+                            this.hide_popup();
+                            if (is_resizing_left) {
+                                console.log("is_resizing_left");
+                                if (parent_bar_id === bar.task.id) {
+                                    bar.update_bar_position({
+                                        x: $bar.ox + $bar.finaldx,
+                                        width: $bar.owidth - $bar.finaldx,
+                                    });
+                                } else {
+                                    bar.update_bar_position({
+                                        x: $bar.ox + $bar.finaldx,
+                                    });
+                                }
+                            } else if (is_resizing_right) {
+                                console.log("is_resizing_right");
+                                if (parent_bar_id === bar.task.id) {
+                                    bar.update_bar_position({
+                                        width: $bar.owidth + $bar.finaldx,
+                                    });
+                                }
+                            } else if (is_dragging) {
+                                console.log("is_dragging");
+                                bar.update_bar_position({x: $bar.ox + $bar.finaldx});
+                            }
+                        });
+                    });*/
             document.addEventListener('mouseup', function () {
                 if (is_dragging || is_resizing_left || is_resizing_right) {
                     bars.forEach(function (bar) { return bar.bar_wrapper.classList.remove('active'); });
@@ -1480,16 +1515,24 @@ var Gantt = (function () {
                 is_resizing_left = false;
                 is_resizing_right = false;
             });
-            $.on(this.svg, 'mouseup', function () {
+            this.svg.addEventListener("mouseup", function () {
                 _this.bar_being_dragged = null;
                 bars.forEach(function (bar) {
-                    var $bar = bar;
-                    if (!$bar.finaldx)
+                    if (!bar.finaldx)
                         return;
                     bar.date_changed();
                     bar.set_action_completed();
                 });
             });
+            /*        $.on(this.svg, 'mouseup', () => {
+                        this.bar_being_dragged = null;
+                        bars.forEach((bar) => {
+                            const $bar = bar;
+                            if (!$bar.finaldx) return;
+                            bar.date_changed();
+                            bar.set_action_completed();
+                        });
+                    });*/
             this.bind_bar_progress();
         };
         Gantt.prototype.bind_bar_progress = function () {
@@ -1514,11 +1557,11 @@ var Gantt = (function () {
                 $bar_progress.min_dx = getWidth($bar_progress);
                 $bar_progress.max_dx = getWidth($bar) - getWidth($bar_progress);
             });
-            $.on(this.svg, 'mousemove', function (e) {
+            this.svg.addEventListener("mousemove", function (mouseEvent) {
                 if (!is_resizing)
                     return;
-                var dx = e.offsetX - x_on_start;
-                e.offsetY - y_on_start;
+                var dx = mouseEvent.offsetX - x_on_start;
+                mouseEvent.offsetY - y_on_start;
                 if (dx > $bar_progress.max_dx) {
                     dx = $bar_progress.max_dx;
                 }
@@ -1530,13 +1573,36 @@ var Gantt = (function () {
                 $.attr($handle, 'points', bar.get_progress_polygon_points());
                 $bar_progress.finaldx = dx;
             });
-            $.on(this.svg, 'mouseup', function () {
+            /*        $.on(this.svg, 'mousemove', (e) => {
+                        if (!is_resizing) return;
+                        let dx = e.offsetX - x_on_start;
+                        let dy = e.offsetY - y_on_start;
+
+                        if (dx > $bar_progress.max_dx) {
+                            dx = $bar_progress.max_dx;
+                        }
+                        if (dx < $bar_progress.min_dx) {
+                            dx = $bar_progress.min_dx;
+                        }
+
+                        const $handle = bar.handle_progress;
+                        $.attr($bar_progress, 'width', $bar_progress.owidth + dx);
+                        $.attr($handle, 'points', bar.get_progress_polygon_points());
+                        $bar_progress.finaldx = dx;
+                    });*/
+            this.svg.addEventListener("mouseup", function (mouseEvent) {
                 is_resizing = false;
                 if (!($bar_progress && $bar_progress.finaldx))
                     return;
                 bar.progress_changed();
                 bar.set_action_completed();
             });
+            /*        $.on(this.svg, 'mouseup', () => {
+                        is_resizing = false;
+                        if (!($bar_progress && $bar_progress.finaldx)) return;
+                        bar.progress_changed();
+                        bar.set_action_completed();
+                    });*/
         };
         Gantt.prototype.get_all_dependent_tasks = function (task_id) {
             var _this = this;
