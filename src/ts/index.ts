@@ -678,7 +678,7 @@ export default class Gantt {
         }
 
         $.on(this.svg, 'mousedown', '.bar-wrapper, .handle', (e, element) => {
-            const bar_wrapper = $.closest('.bar-wrapper', element);
+            const bar_wrapper = element.closest(".bar-wrapper");
 
             if (element.classList.contains('left')) {
                 console.log("is_resizing_left");
@@ -786,7 +786,7 @@ export default class Gantt {
             x_on_start = e.offsetX;
             y_on_start = e.offsetY;
 
-            const $bar_wrapper = $.closest('.bar-wrapper', handle);
+            const $bar_wrapper = handle.closest('.bar-wrapper');
             const id = $bar_wrapper.getAttribute('data-id');
             bar = this.get_bar(id);
 

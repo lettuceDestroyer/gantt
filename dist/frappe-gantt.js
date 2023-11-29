@@ -1420,7 +1420,7 @@ var Gantt = (function () {
                 return is_dragging || is_resizing_left || is_resizing_right;
             }
             $.on(this.svg, 'mousedown', '.bar-wrapper, .handle', function (e, element) {
-                var bar_wrapper = $.closest('.bar-wrapper', element);
+                var bar_wrapper = element.closest(".bar-wrapper");
                 if (element.classList.contains('left')) {
                     console.log("is_resizing_left");
                     is_resizing_left = true;

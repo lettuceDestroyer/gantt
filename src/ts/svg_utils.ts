@@ -114,16 +114,6 @@ $.delegate = (element, event, selector, callback) => {
     });
 };
 
-$.closest = (selector, element) => {
-    if (!element) return null;
-
-    if (element.matches(selector)) {
-        return element;
-    }
-
-    return $.closest(selector, element.parentNode);
-};
-
 $.attr = (element, attr, value) => {
     if (!value && typeof attr === 'string') {
         return element.getAttribute(attr);
