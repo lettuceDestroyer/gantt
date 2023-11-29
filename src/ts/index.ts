@@ -782,6 +782,7 @@ export default class Gantt {
 
         $.on(this.svg, 'mousedown', '.handle.progress', (e, handle) => {
             is_resizing = true;
+            console.log("is_resizing");
             x_on_start = e.offsetX;
             y_on_start = e.offsetY;
 
@@ -793,26 +794,27 @@ export default class Gantt {
             $bar = bar.bar;
 
             $bar_progress.finaldx = 0;
-            $bar_progress.owidth = getWidth($bar_progress);
-            $bar_progress.min_dx = getWidth($bar_progress);
-            $bar_progress.max_dx = getWidth($bar) - getWidth($bar_progress);
+            $bar_progress.originalWidth = getWidth($bar_progress);
+            $bar_progress.minOffsetX = getWidth($bar_progress) * -1;
+            $bar_progress.maxOffsetX = getWidth($bar) - getWidth($bar_progress);
         });
 
         this.svg.addEventListener("mousemove", (mouseEvent: MouseEvent) => {
             if (!is_resizing) return;
+            console.log("is_resizing = false");
             let dx = mouseEvent.offsetX - x_on_start;
             let dy = mouseEvent.offsetY - y_on_start;
 
-            if (dx > $bar_progress.max_dx) {
-                dx = $bar_progress.max_dx;
+            if (dx > $bar_progress.maxOffsetX) {
+                dx = $bar_progress.maxOffsetX;
             }
-            if (dx < $bar_progress.min_dx) {
-                dx = $bar_progress.min_dx;
+            if (dx < $bar_progress.minOffsetX) {
+                dx = $bar_progress.minOffsetX;
             }
 
             const $handle = bar.handle_progress;
-            $.attr($bar_progress, 'width', $bar_progress.owidth + dx);
-            $.attr($handle, 'points', bar.get_progress_polygon_points());
+            $bar_progress.setAttribute("width", $bar_progress.originalWidth + dx);
+            $handle.setAttribute('points', bar.get_progress_polygon_points());
             $bar_progress.finaldx = dx;
         });
 
